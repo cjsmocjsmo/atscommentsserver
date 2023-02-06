@@ -1,22 +1,20 @@
 package main
 
 import (
-	// "net/http"
-	// "crypto/tls"
-	// "golang.org/x/crypto/acme"
-	"golang.org/x/crypto/acme/autocert"
+	// "golang.org/x/crypto/acme/autocert"
+	"log"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"log"
 )
 
 func main() {
 	StartServerLogging()
 	log.Println("Starting echo")
 	e := echo.New()
-	e.AutoTLSManager.Cache = autocert.DirCache("/var/www/.cache")
-	e.Use(middleware.Recover())
-	
+	// e.AutoTLSManager.Cache = autocert.DirCache("/var/www/.cache")
+	// e.Use(middleware.Recover())
+
 	e.Use(middleware.CORS())
 
 	e.GET("/isloggedin", IsLoggedInHandler)
@@ -44,6 +42,6 @@ func main() {
 	e.GET("/adminsignout", AdminSignOutHandler)
 
 	e.Static("/static", "static") //for pics
-	e.Logger.Fatal(e.StartAutoTLS(":443"))
-	//e.Logger.Fatal(e.Start(":9090"))
+	// e.Logger.Fatal(e.StartAutoTLS(":443"))
+	e.Logger.Fatal(e.Start(":9090"))
 }

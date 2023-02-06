@@ -26,3 +26,4 @@ go get -v /home/porthose_cjsmo_cjsmo/atscommentsserver/
 CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o atscommentsserver /home/porthose_cjsmo_cjsmo/atscommentsserver/
 
 sudo systemctl start ATSCommentsServer
+

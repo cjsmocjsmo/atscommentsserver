@@ -51,7 +51,7 @@ func NewEstReqHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, "Estimate Request Created")
 }
 
-func globEstimate() []EstimateS {
+func GlobEstimate() []EstimateS {
 	accept, err := filepath.Glob("./data/estimates/*.json")
 	CheckError(err, "Accept glob has failed")
 	var allEstimate2 []EstimateS
@@ -65,7 +65,7 @@ func globEstimate() []EstimateS {
 	return allEstimate2
 }
 
-func readEstFile(afile string) EstimateS {
+func ReadEstFile(afile string) EstimateS {
 	estimate, err := os.ReadFile(afile)
 	CheckError(err, "Read file has failed")
 	var est EstimateS
@@ -75,12 +75,12 @@ func readEstFile(afile string) EstimateS {
 
 func CompleteEstReqHandler(c echo.Context) error {
 	query := c.QueryParam("uuid")
-	globestimates, err := filepath.Glob("./data/estimates/*.json")
+	Globestimates, err := filepath.Glob("./data/estimates/*.json")
 	CheckError(err, "completed glob has failed")
 	var AEst EstimateS
-	for _, f := range globestimates {
+	for _, f := range Globestimates {
 		if strings.Contains(query, f) {
-			esti := readEstFile(f)
+			esti := ReadEstFile(f)
 			newdest := "./data/estcompleted/estcompleted_" + esti.UUID + ".json"
 			oldFile := esti.FileName
 			AEst.UUID = esti.UUID
@@ -105,7 +105,7 @@ func CompleteEstReqHandler(c echo.Context) error {
 }
 
 func GetAllEstimatesHandler(c echo.Context) error {
-	esti := globEstimate()
+	esti := GlobEstimate()
 	if len(esti) != 0 {
 		return c.JSON(http.StatusOK, esti)
 	} else {

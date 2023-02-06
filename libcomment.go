@@ -103,7 +103,7 @@ func CreateNewCommentHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, "Comment Created")
 }
 
-func globAccepted() []CommentS {
+func GlobAccepted() []CommentS {
 	accept, err := filepath.Glob("./data/accepted/*.json")
 	CheckError(err, "Accept glob has failed")
 	var allAccepted2 []CommentS
@@ -117,7 +117,7 @@ func globAccepted() []CommentS {
 	return allAccepted2
 }
 
-func globRejected() []CommentS {
+func GlobRejected() []CommentS {
 	rejected, err := filepath.Glob("./data/rejected/*.json")
 	CheckError(err, "Rejected glob has failed")
 	var allRejected2 []CommentS
@@ -131,7 +131,7 @@ func globRejected() []CommentS {
 	return allRejected2
 }
 
-func globJailed() []CommentS {
+func GlobJailed() []CommentS {
 	jailed, err := filepath.Glob("./data/jailed/*.json")
 	CheckError(err, "Rejected glob has failed")
 	var allJailed CommentS
@@ -146,9 +146,9 @@ func globJailed() []CommentS {
 }
 
 func GetAllCommentsHandler(c echo.Context) error {
-	allAccepted := globAccepted()
-	allRejected := globRejected()
-	allJailed := globJailed()
+	allAccepted := GlobAccepted()
+	allRejected := GlobRejected()
+	allJailed := GlobJailed()
 	var allList []CommentS
 	if len(allAccepted) != 0 {
 		allList = append(allList, allAccepted...)
@@ -166,7 +166,7 @@ func GetAllCommentsHandler(c echo.Context) error {
 }
 
 func GetAllAcceptedCommentsHandler(c echo.Context) error {
-	globaccepted := globAccepted()
+	globaccepted := GlobAccepted()
 	if len(globaccepted) != 0 {
 		var all []CommentS
 		all = append(all, globaccepted...)
@@ -177,7 +177,7 @@ func GetAllAcceptedCommentsHandler(c echo.Context) error {
 }
 
 func GetAllRejectedCommentsHandler(c echo.Context) error {
-	globrejected := globRejected()
+	globrejected := GlobRejected()
 	if len(globrejected) != 0 {
 		var all []CommentS
 		all = append(all, globrejected...)
@@ -188,7 +188,7 @@ func GetAllRejectedCommentsHandler(c echo.Context) error {
 }
 
 func GetAllJailedCommentsHandler(c echo.Context) error {
-	globjailed := globJailed()
+	globjailed := GlobJailed()
 	if len(globjailed) != 0 {
 		var all []CommentS
 		all = append(all, globjailed...)

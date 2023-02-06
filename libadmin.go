@@ -1,12 +1,17 @@
 package main
 
 import (
+	"archive/zip"
 	"encoding/json"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -164,15 +169,149 @@ func SignOutHandler(c echo.Context) error {
 }
 
 func AdminSignInHandler(c echo.Context) error {
-	query := c.QueryParam("comment")
+	query := c.QueryParam("creds")
 	// sp := strings.Split(query, "/")
+	// token := sp[0]
+	// email := sp[1]
+	// pword := sp[2]
 
 	return c.JSON(http.StatusOK, query)
 }
 
 func AdminSignOutHandler(c echo.Context) error {
-	query := c.QueryParam("comment")
+	query := c.QueryParam("creds")
 	// sp := strings.Split(query, "/")
 
 	return c.JSON(http.StatusOK, query)
+}
+
+func GlobAdmin() []ProfileS {
+	profiles, err := filepath.Glob("./data/admin/profiles/*.json")
+	CheckError(err, "Admin glob has failed")
+	var allProfiles2 []ProfileS
+	var allProfiles ProfileS
+	for _, path := range profiles {
+		f, err := ioutil.ReadFile(path)
+		CheckError(err, "Open has failed")
+		json.Unmarshal(f, &allProfiles)
+		allProfiles2 = append(allProfiles2, allProfiles)
+	}
+	return allProfiles2
+}
+
+// func zipFiles(afile string) {
+// 	// log.Println("creating zip archive...")
+
+// 	// dt := time.Now()
+// 	// date := dt.Format("13-01-2022")
+
+// 	// addr := "./backup/" + date + "_backup.zip"
+// 	// archive, err := os.Create(addr)
+// 	// if err != nil {
+// 	//     panic(err)
+// 	// }
+// 	// defer archive.Close()
+// 	// zipWriter := zip.NewWriter(archive)
+
+// }
+
+func Backup(c echo.Context) error {
+	log.Println("creating zip archive...")
+
+	dt := time.Now()
+	date := dt.Format("13-01-2022")
+
+	addr := "./backup/" + date + "_backup.zip"
+	archive, err := os.Create(addr)
+	if err != nil {
+		panic(err)
+	}
+	defer archive.Close()
+	zipWriter := zip.NewWriter(archive)
+
+	g1, err := filepath.Glob("./data/accepted/*.json")
+	CheckError(err, "accept glob has failed")
+	if len(g1) != 0 {
+		for _, g := range g1 {
+			log.Println("opening first file...")
+			f1, err := os.Open(g)
+			if err != nil {
+				panic(err)
+			}
+			defer f1.Close()
+
+			log.Println("writing first file to archive...")
+			foo := "/accepted/" + g
+			w1, err := zipWriter.Create(foo)
+			if err != nil {
+				panic(err)
+			}
+			if _, err := io.Copy(w1, f1); err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	g2, err := filepath.Glob("./data/estimates/*.json")
+	CheckError(err, "estimates glob has failed")
+	if len(g2) != 0 {
+		for _, g := range g1 {
+			log.Println("opening first file...")
+			f1, err := os.Open(g)
+			if err != nil {
+				panic(err)
+			}
+			defer f1.Close()
+
+			log.Println("writing first file to archive...")
+			foo := "/estimates/" + g
+			w1, err := zipWriter.Create(foo)
+			if err != nil {
+				panic(err)
+			}
+			if _, err := io.Copy(w1, f1); err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	g3, err := filepath.Glob("./data/jailed/*.json")
+	CheckError(err, "jailed glob has failed")
+	if len(g3) != 0 {
+		for _, g := range g1 {
+			log.Println("opening first file...")
+			f1, err := os.Open(g)
+			if err != nil {
+				panic(err)
+			}
+			defer f1.Close()
+
+			log.Println("writing first file to archive...")
+			foo := "/jailed/" + g
+			w1, err := zipWriter.Create(foo)
+			if err != nil {
+				panic(err)
+			}
+			if _, err := io.Copy(w1, f1); err != nil {
+				panic(err)
+			}
+		}
+	}
+
+	g4 := GlobRejected()
+	if len(g4) != 0 {
+
+	}
+
+	g6 := GlobAdmin()
+	if len(g6) != 0 {
+
+	}
+
+	g5 := "./data/admin/loggedInList.json"
+
+	log.Println("closing zip archive...")
+	zipWriter.Close()
+
+	return c.JSON(http.StatusOK, g5)
 }
