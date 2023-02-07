@@ -27,6 +27,12 @@ type LoggedIn struct {
 	User string
 }
 
+type CredS struct {
+	Token string
+	Email string
+	Password string
+}
+
 func SignUpHandler(c echo.Context) error {
 	query := c.QueryParam("creds")
 	sp := strings.Split(query, "/")
@@ -168,14 +174,42 @@ func SignOutHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, "User is logged out")
 }
 
+func ReadCredsFile(afile string) CredS {
+	creditials, err := os.ReadFile(afile)
+	CheckError(err, "Read file has failed")
+	var creds CredS
+	json.Unmarshal(creditials, &creds)
+	return creds
+}
+
+func checkCreds(e1 string, e2 string) bool {
+	if (e1 == e2) {
+		return true
+	} else {
+		return false
+	}
+}
+
+func checkResults(e1 bool, e2 bool, e3 bool) bool {
+	if (e1 || e2 || e3) {
+		return true
+	} else {
+		return false
+	}
+}
+
 func AdminSignInHandler(c echo.Context) error {
 	query := c.QueryParam("creds")
-	// sp := strings.Split(query, "/")
-	// token := sp[0]
-	// email := sp[1]
-	// pword := sp[2]
-
-	return c.JSON(http.StatusOK, query)
+	sp := strings.Split(query, "/")
+	token := sp[0]
+	email := sp[1]
+	pword := sp[2]
+	acreds := ReadCredsFile("./creds/admin_creds.json")
+	result1 := checkCreds(token, acreds.Token)
+	result2 := checkCreds(email, acreds.Email)
+	result3 := checkCreds(pword, acreds.Password)
+	isLoggedIn := checkResults(result1, result2, result3)
+	return c.JSON(http.StatusOK, isLoggedIn)
 }
 
 func AdminSignOutHandler(c echo.Context) error {
