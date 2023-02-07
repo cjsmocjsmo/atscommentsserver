@@ -4,7 +4,7 @@ import (
 	"archive/zip"
 	"encoding/json"
 	"io"
-	"io/ioutil"
+	// "io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -185,35 +185,21 @@ func AdminSignOutHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, query)
 }
 
-func GlobAdmin() []ProfileS {
-	profiles, err := filepath.Glob("./data/admin/profiles/*.json")
-	CheckError(err, "Admin glob has failed")
-	var allProfiles2 []ProfileS
-	var allProfiles ProfileS
-	for _, path := range profiles {
-		f, err := ioutil.ReadFile(path)
-		CheckError(err, "Open has failed")
-		json.Unmarshal(f, &allProfiles)
-		allProfiles2 = append(allProfiles2, allProfiles)
-	}
-	return allProfiles2
-}
-
-// func zipFiles(afile string) {
-// 	// log.Println("creating zip archive...")
-
-// 	// dt := time.Now()
-// 	// date := dt.Format("13-01-2022")
-
-// 	// addr := "./backup/" + date + "_backup.zip"
-// 	// archive, err := os.Create(addr)
-// 	// if err != nil {
-// 	//     panic(err)
-// 	// }
-// 	// defer archive.Close()
-// 	// zipWriter := zip.NewWriter(archive)
-
+// func GlobAdmin() []ProfileS {
+// 	profiles, err := filepath.Glob("./data/admin/profiles/*.json")
+// 	CheckError(err, "Admin glob has failed")
+// 	var allProfiles2 []ProfileS
+// 	var allProfiles ProfileS
+// 	for _, path := range profiles {
+// 		f, err := ioutil.ReadFile(path)
+// 		CheckError(err, "Open has failed")
+// 		json.Unmarshal(f, &allProfiles)
+// 		allProfiles2 = append(allProfiles2, allProfiles)
+// 	}
+// 	return allProfiles2
 // }
+
+
 
 func Backup(c echo.Context) error {
 	log.Println("creating zip archive...")
@@ -221,7 +207,7 @@ func Backup(c echo.Context) error {
 	dt := time.Now()
 	date := dt.Format("13-01-2022")
 
-	addr := "./backup/" + date + "_backup.zip"
+	addr := "./static/" + date + "_backup.zip"
 	archive, err := os.Create(addr)
 	if err != nil {
 		panic(err)
@@ -240,8 +226,10 @@ func Backup(c echo.Context) error {
 			}
 			defer f1.Close()
 
+			base := filepath.Base(g)
+
 			log.Println("writing first file to archive...")
-			foo := "/accepted/" + g
+			foo := "/accepted/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -263,8 +251,10 @@ func Backup(c echo.Context) error {
 			}
 			defer f1.Close()
 
+			base := filepath.Base(g)
+
 			log.Println("writing first file to archive...")
-			foo := "/estimates/" + g
+			foo := "/estimates/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -286,8 +276,10 @@ func Backup(c echo.Context) error {
 			}
 			defer f1.Close()
 
+			base := filepath.Base(g)
+
 			log.Println("writing first file to archive...")
-			foo := "/jailed/" + g
+			foo := "/jailed/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -298,20 +290,74 @@ func Backup(c echo.Context) error {
 		}
 	}
 
-	g4 := GlobRejected()
+	g4, err := filepath.Glob("./data/rejected/*.json")
+	CheckError(err, "rejected glob failed")
 	if len(g4) != 0 {
+		for _, g := range g1 {
+			log.Println("opening first file...")
+			f1, err := os.Open(g)
+			if err != nil {
+				panic(err)
+			}
+			defer f1.Close()
 
+			base := filepath.Base(g)
+
+			log.Println("writing first file to archive...")
+			foo := "/rejected/" + base
+			w1, err := zipWriter.Create(foo)
+			if err != nil {
+				panic(err)
+			}
+			if _, err := io.Copy(w1, f1); err != nil {
+				panic(err)
+			}
+		}
 	}
 
-	g6 := GlobAdmin()
+	g6, err := filepath.Glob("./data/admin/profiles/*.json")
+	CheckError(err, "admin glob has failed")
 	if len(g6) != 0 {
+		for _, g := range g1 {
+			log.Println("opening first file...")
+			f1, err := os.Open(g)
+			if err != nil {
+				panic(err)
+			}
+			defer f1.Close()
 
+			base := filepath.Base(g)
+
+			log.Println("writing first file to archive...")
+			foo := "/admin/profiles/" + base
+			w1, err := zipWriter.Create(foo)
+			if err != nil {
+				panic(err)
+			}
+			if _, err := io.Copy(w1, f1); err != nil {
+				panic(err)
+			}
+		}
 	}
 
-	g5 := "./data/admin/loggedInList.json"
+	f1, err := os.Open("./data/admin/loggedInList.json")
+	if err != nil {
+		panic(err)
+	}
+	defer f1.Close()
+
+	log.Println("writing first file to archive...")
+	foo := "/admin/loggedInList.json"
+	w1, err := zipWriter.Create(foo)
+	if err != nil {
+		panic(err)
+	}
+	if _, err := io.Copy(w1, f1); err != nil {
+		panic(err)
+	}
 
 	log.Println("closing zip archive...")
 	zipWriter.Close()
 
-	return c.JSON(http.StatusOK, g5)
+	return c.JSON(http.StatusOK, "backup complete")
 }
