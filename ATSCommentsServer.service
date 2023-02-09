@@ -7,7 +7,7 @@ Type=idle
 User=porthose_cjsmo_cjsmo
 Restart=always
 RestartSec=10
-ExecStart=/home/porthose_cjsmo_cjsmo/atscommentsserver/atscommentsserver
+ExecStart=sh /home/porthose_cjsmo_cjsmo/atscommentsserver/start.sh
 
 [Install]
 WantedBy=multi-user.target
