@@ -183,18 +183,18 @@ func ReadCredsFile(afile string) CredS {
 }
 
 func checkCreds(e1 string, e2 string) bool {
-	if (e1 == e2) {
-		return true
-	} else {
+	if (e1 != e2) {
 		return false
+	} else {
+		return true
 	}
 }
 
 func checkResults(e1 bool, e2 bool, e3 bool) bool {
-	if (e1 || e2 || e3) {
-		return true
-	} else {
+	if (!e1 || !e2 || !e3) {
 		return false
+	} else {
+		return true
 	}
 }
 
