@@ -41,6 +41,8 @@ func main() {
 	e.GET("/adminsignin", AdminSignInHandler)
 	e.GET("/adminsignout", AdminSignOutHandler)
 
+	e.GET("/test", TestHandler)
+
 	e.Static("/static", "static") //for pics
 	e.Logger.Fatal(e.StartAutoTLS(":443"))
 	// e.Logger.Fatal(e.Start(":9090"))

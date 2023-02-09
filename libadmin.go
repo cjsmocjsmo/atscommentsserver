@@ -33,6 +33,10 @@ type CredS struct {
 	Password string
 }
 
+func TestHandler(c echo.Context) error {
+	return c.JSON(http.StatusOK, "Server Is Up and Running")
+}
+
 func SignUpHandler(c echo.Context) error {
 	query := c.QueryParam("creds")
 	sp := strings.Split(query, "/")
