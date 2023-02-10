@@ -22,8 +22,8 @@ touch ./data/admin/loggedinList.json && \
 
 sudo mv ./ATSCommentsServer.service /etc/systemd/system/
 
-go get -v /home/porthose_cjsmo_cjsmo/atscommentsserver/
-CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o atscommentsserver /home/porthose_cjsmo_cjsmo/atscommentsserver/
+go get -v /home/porthose_cjsmo_cjsmo/atscommentsserver/atscommentsserver/
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o atscommentsserver /home/porthose_cjsmo_cjsmo/atscommentsserver/atscommentsserver/
 
 sudo systemctl start ATSCommentsServer
 

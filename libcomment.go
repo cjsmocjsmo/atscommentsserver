@@ -30,7 +30,7 @@ type CommentS struct {
 }
 
 func StartServerLogging() string {
-	logtxtfile := "/home/porthose_cjsmo_cjsmo/log/logfile.txt"
+	logtxtfile := "/home/porthose_cjsmo_cjsmo/atscommentsserver/log/logfile.txt"
 	// If the file doesn't exist, create it or append to the file
 	file, err := os.OpenFile(logtxtfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
@@ -81,7 +81,7 @@ func Writefile(com []byte, dest string) {
 
 func CreateNewCommentHandler(c echo.Context) error {
 	uuid, err := UUID()
-	newdest := "/home/porthose_cjsmo_cjsmo/data/jailed/jailed_" + uuid + ".json"
+	newdest := "/home/porthose_cjsmo_cjsmo/atscommentsserver/data/jailed/jailed_" + uuid + ".json"
 	CheckError(err, "uuid creation has failed")
 	// query string needs to be in the format
 	// ?comment=John Doe/john@gmail/Job well done
@@ -105,7 +105,7 @@ func CreateNewCommentHandler(c echo.Context) error {
 }
 
 func GlobAccepted() []CommentS {
-	accept, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/accepted/*.json")
+	accept, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/accepted/*.json")
 	CheckError(err, "Accept glob has failed")
 	var allAccepted2 []CommentS
 	var allAccepted CommentS
@@ -119,7 +119,7 @@ func GlobAccepted() []CommentS {
 }
 
 func GlobRejected() []CommentS {
-	rejected, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/rejected/*.json")
+	rejected, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/rejected/*.json")
 	CheckError(err, "Rejected glob has failed")
 	var allRejected2 []CommentS
 	var allRejected CommentS
@@ -133,7 +133,7 @@ func GlobRejected() []CommentS {
 }
 
 func GlobJailed() []CommentS {
-	jailed, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/jailed/*.json")
+	jailed, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/jailed/*.json")
 	CheckError(err, "Rejected glob has failed")
 	var allJailed CommentS
 	var allJailed2 []CommentS
@@ -201,7 +201,7 @@ func GetAllJailedCommentsHandler(c echo.Context) error {
 
 func AcceptCommentHandler(c echo.Context) error {
 	query := c.QueryParam("uuid")
-	globjailed, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/jailed/*.json")
+	globjailed, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/jailed/*.json")
 	CheckError(err, "globjail has failed")
 	var ACom CommentS
 	for _, f := range globjailed {

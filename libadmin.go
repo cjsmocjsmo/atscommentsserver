@@ -44,7 +44,7 @@ func SignUpHandler(c echo.Context) error {
 	acid, err := UUID()
 	CheckError(err, "acid #1 has failed")
 	userid := acid + "_" + sp[0]
-	newdest := "/home/porthose_cjsmo_cjsmo/data/admin/profiles/" + acid + "_" + sp[0] + ".json"
+	newdest := "/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/profiles/" + acid + "_" + sp[0] + ".json"
 	var pfile ProfileS
 	pfile.Email = sp[0]
 	pfile.Password = sp[1]
@@ -60,7 +60,7 @@ func SignUpHandler(c echo.Context) error {
 func addToLoggedInList(cstring string) string {
 	var newuser LoggedIn
 	newuser.User = cstring
-	loc := "/home/porthose_cjsmo_cjsmo/data/admin/loggedInList.json"
+	loc := "/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/loggedInList.json"
 	uil, err := os.ReadFile(loc)
 	CheckError(err, "addToLoggedInList read file has failed")
 	var loggedinlist []LoggedIn
@@ -73,7 +73,7 @@ func addToLoggedInList(cstring string) string {
 }
 
 func checkForAccount(astring string) bool {
-	profiles, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/admin/profiles/*.json")
+	profiles, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/profiles/*.json")
 	CheckError(err, "Glob profiles has failsed")
 	result := false
 	for _, pf := range profiles {
@@ -94,7 +94,7 @@ func checkForAccount(astring string) bool {
 
 func checkForAlreadyLoggedIn(creds string) bool {
 	// for internal use
-	loc := "/home/porthose_cjsmo_cjsmo/data/admin/loggedInList.json"
+	loc := "/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/loggedInList.json"
 	lil, err := os.ReadFile(loc)
 	CheckError(err, "checkForAlreadyLoggedIn readfile has failed")
 	var logedinlist []LoggedIn
@@ -113,7 +113,7 @@ func checkForAlreadyLoggedIn(creds string) bool {
 func IsLoggedInHandler(c echo.Context) error {
 	// for external use
 	query := c.QueryParam("creds")
-	loc := "/home/porthose_cjsmo_cjsmo/data/admin/loggedInList.json"
+	loc := "/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/loggedInList.json"
 	lil, err := os.ReadFile(loc)
 	CheckError(err, "checkForAlreadyLoggedIn readfile has failed")
 	var logedinlist []LoggedIn
@@ -166,7 +166,7 @@ func getIndex(query string, loggedinlist []LoggedIn) int {
 
 func SignOutHandler(c echo.Context) error {
 	query := c.QueryParam("creds")
-	loc := "/home/porthose_cjsmo_cjsmo/data/admin/loggedInList.json"
+	loc := "/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/loggedInList.json"
 	lil, err := os.ReadFile(loc)
 	CheckError(err, "Signout has failed")
 	var loggedinlist []LoggedIn
@@ -209,7 +209,7 @@ func AdminSignInHandler(c echo.Context) error {
 	token := sp[0]
 	email := sp[1]
 	pword := sp[2]
-	acreds := ReadCredsFile("/home/porthose_cjsmo_cjsmo/creds/admin_creds.json")
+	acreds := ReadCredsFile("/home/porthose_cjsmo_cjsmo/atscommentsserver/creds/admin_creds.json")
 	result1 := checkCreds(token, acreds.Token)
 	result2 := checkCreds(email, acreds.Email)
 	result3 := checkCreds(pword, acreds.Password)
@@ -244,7 +244,7 @@ func Backup(c echo.Context) error {
 	dt := time.Now()
 	date := dt.Format("13-01-2022")
 
-	addr := "/home/porthose_cjsmo_cjsmo/static/" + date + "_backup.zip"
+	addr := "/home/porthose_cjsmo_cjsmo/atscommentsserver/static/" + date + "_backup.zip"
 	archive, err := os.Create(addr)
 	if err != nil {
 		panic(err)
@@ -252,7 +252,7 @@ func Backup(c echo.Context) error {
 	defer archive.Close()
 	zipWriter := zip.NewWriter(archive)
 
-	g1, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/accepted/*.json")
+	g1, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/accepted/*.json")
 	CheckError(err, "accept glob has failed")
 	if len(g1) != 0 {
 		for _, g := range g1 {
@@ -266,7 +266,7 @@ func Backup(c echo.Context) error {
 			base := filepath.Base(g)
 
 			log.Println("writing first file to archive...")
-			foo := "/home/porthose_cjsmo_cjsmo/accepted/" + base
+			foo := "/home/porthose_cjsmo_cjsmo/atscommentsserver/accepted/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -277,7 +277,7 @@ func Backup(c echo.Context) error {
 		}
 	}
 
-	g2, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/estimates/*.json")
+	g2, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/estimates/*.json")
 	CheckError(err, "estimates glob has failed")
 	if len(g2) != 0 {
 		for _, g := range g1 {
@@ -291,7 +291,7 @@ func Backup(c echo.Context) error {
 			base := filepath.Base(g)
 
 			log.Println("writing first file to archive...")
-			foo := "/home/porthose_cjsmo_cjsmo/estimates/" + base
+			foo := "/home/porthose_cjsmo_cjsmo/atscommentsserver/estimates/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -302,7 +302,7 @@ func Backup(c echo.Context) error {
 		}
 	}
 
-	g3, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/jailed/*.json")
+	g3, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/jailed/*.json")
 	CheckError(err, "jailed glob has failed")
 	if len(g3) != 0 {
 		for _, g := range g1 {
@@ -316,7 +316,7 @@ func Backup(c echo.Context) error {
 			base := filepath.Base(g)
 
 			log.Println("writing first file to archive...")
-			foo := "/home/porthose_cjsmo_cjsmo/jailed/" + base
+			foo := "/home/porthose_cjsmo_cjsmo/atscommentsserver/jailed/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -327,7 +327,7 @@ func Backup(c echo.Context) error {
 		}
 	}
 
-	g4, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/rejected/*.json")
+	g4, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/rejected/*.json")
 	CheckError(err, "rejected glob failed")
 	if len(g4) != 0 {
 		for _, g := range g1 {
@@ -341,7 +341,7 @@ func Backup(c echo.Context) error {
 			base := filepath.Base(g)
 
 			log.Println("writing first file to archive...")
-			foo := "/home/porthose_cjsmo_cjsmo/rejected/" + base
+			foo := "/home/porthose_cjsmo_cjsmo/atscommentsserver/rejected/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -352,7 +352,7 @@ func Backup(c echo.Context) error {
 		}
 	}
 
-	g6, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/data/admin/profiles/*.json")
+	g6, err := filepath.Glob("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/profiles/*.json")
 	CheckError(err, "admin glob has failed")
 	if len(g6) != 0 {
 		for _, g := range g1 {
@@ -366,7 +366,7 @@ func Backup(c echo.Context) error {
 			base := filepath.Base(g)
 
 			log.Println("writing first file to archive...")
-			foo := "/home/porthose_cjsmo_cjsmo/admin/profiles/" + base
+			foo := "/home/porthose_cjsmo_cjsmo/atscommentsserver/admin/profiles/" + base
 			w1, err := zipWriter.Create(foo)
 			if err != nil {
 				panic(err)
@@ -377,14 +377,14 @@ func Backup(c echo.Context) error {
 		}
 	}
 
-	f1, err := os.Open("/home/porthose_cjsmo_cjsmo/data/admin/loggedInList.json")
+	f1, err := os.Open("/home/porthose_cjsmo_cjsmo/atscommentsserver/data/admin/loggedInList.json")
 	if err != nil {
 		panic(err)
 	}
 	defer f1.Close()
 
 	log.Println("writing first file to archive...")
-	foo := "/home/porthose_cjsmo_cjsmo/admin/loggedInList.json"
+	foo := "/home/porthose_cjsmo_cjsmo/atscommentsserver/admin/loggedInList.json"
 	w1, err := zipWriter.Create(foo)
 	if err != nil {
 		panic(err)
