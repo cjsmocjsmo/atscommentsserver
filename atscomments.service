@@ -8,8 +8,8 @@ Type=forking
 User=deploy
 Group=deploy
 
-ExecStart=/usr/local/go/bin/go run main.go
-WorkingDirectory=/home/deploy/providus-app
+ExecStart=atscomments
+
 
 Restart=always
 RestartSec=10
