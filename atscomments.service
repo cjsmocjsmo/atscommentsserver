@@ -1,0 +1,22 @@
+[Unit]
+Description=ATS Comments Server
+After=network.target
+
+[Service]
+Type=forking
+
+User=deploy
+Group=deploy
+
+ExecStart=/usr/local/go/bin/go run main.go
+WorkingDirectory=/home/deploy/providus-app
+
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+
+SyslogIdentifier=atscomments-service
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

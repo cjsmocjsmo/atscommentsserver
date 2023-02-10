@@ -1,1 +1,0 @@
-sudo /home/porthose_cjsmo_cjsmo/atscommentsserver/atscommentsserver

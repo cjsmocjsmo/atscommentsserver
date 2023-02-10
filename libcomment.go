@@ -29,7 +29,7 @@ type CommentS struct {
 }
 
 func StartServerLogging() string {
-	logtxtfile := "./log/logfile.txt"
+	logtxtfile := "~/atscommentsserver/log/logfile.txt"
 	// If the file doesn't exist, create it or append to the file
 	file, err := os.OpenFile(logtxtfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
@@ -80,7 +80,7 @@ func Writefile(com []byte, dest string) {
 
 func CreateNewCommentHandler(c echo.Context) error {
 	uuid, err := UUID()
-	newdest := "./data/jailed/jailed_" + uuid + ".json"
+	newdest := "~/atscommentsserver/data/jailed/jailed_" + uuid + ".json"
 	CheckError(err, "uuid creation has failed")
 	// query string needs to be in the format
 	// ?comment=John Doe/john@gmail/Job well done
@@ -104,7 +104,7 @@ func CreateNewCommentHandler(c echo.Context) error {
 }
 
 func GlobAccepted() []CommentS {
-	accept, err := filepath.Glob("./data/accepted/*.json")
+	accept, err := filepath.Glob("~/atscommentsserver/data/accepted/*.json")
 	CheckError(err, "Accept glob has failed")
 	var allAccepted2 []CommentS
 	var allAccepted CommentS
@@ -118,7 +118,7 @@ func GlobAccepted() []CommentS {
 }
 
 func GlobRejected() []CommentS {
-	rejected, err := filepath.Glob("./data/rejected/*.json")
+	rejected, err := filepath.Glob("~/atscommentsserver/data/rejected/*.json")
 	CheckError(err, "Rejected glob has failed")
 	var allRejected2 []CommentS
 	var allRejected CommentS
@@ -132,7 +132,7 @@ func GlobRejected() []CommentS {
 }
 
 func GlobJailed() []CommentS {
-	jailed, err := filepath.Glob("./data/jailed/*.json")
+	jailed, err := filepath.Glob("~/atscommentsserver/data/jailed/*.json")
 	CheckError(err, "Rejected glob has failed")
 	var allJailed CommentS
 	var allJailed2 []CommentS
@@ -200,7 +200,7 @@ func GetAllJailedCommentsHandler(c echo.Context) error {
 
 func AcceptCommentHandler(c echo.Context) error {
 	query := c.QueryParam("uuid")
-	globjailed, err := filepath.Glob("./data/jailed/*.json")
+	globjailed, err := filepath.Glob("~/atscommentsserver/data/jailed/*.json")
 	CheckError(err, "globjail has failed")
 	var ACom CommentS
 	for _, f := range globjailed {
