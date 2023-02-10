@@ -31,7 +31,7 @@ func NewEstReqHandler(c echo.Context) error {
 	sp := strings.Split(query, "/")
 	uuid, err := UUID()
 	CheckError(err, "UUID creation failed")
-	newdest := "./data/estimates/estimate_" + uuid + ".json"
+	newdest := "~/atscommentsserver/data/estimates/estimate_" + uuid + ".json"
 	var est EstimateS
 	est.UUID = uuid
 	est.FileName = newdest
@@ -52,7 +52,7 @@ func NewEstReqHandler(c echo.Context) error {
 }
 
 func GlobEstimate() []EstimateS {
-	accept, err := filepath.Glob("./data/estimates/*.json")
+	accept, err := filepath.Glob("~/atscommentsserver/data/estimates/*.json")
 	CheckError(err, "Accept glob has failed")
 	var allEstimate2 []EstimateS
 	var allEstimate EstimateS
@@ -75,13 +75,13 @@ func ReadEstFile(afile string) EstimateS {
 
 func CompleteEstReqHandler(c echo.Context) error {
 	query := c.QueryParam("uuid")
-	Globestimates, err := filepath.Glob("./data/estimates/*.json")
+	Globestimates, err := filepath.Glob("~/atscommentsserver/data/estimates/*.json")
 	CheckError(err, "completed glob has failed")
 	var AEst EstimateS
 	for _, f := range Globestimates {
 		if strings.Contains(query, f) {
 			esti := ReadEstFile(f)
-			newdest := "./data/estcompleted/estcompleted_" + esti.UUID + ".json"
+			newdest := "~/atscommentsserver/data/estcompleted/estcompleted_" + esti.UUID + ".json"
 			oldFile := esti.FileName
 			AEst.UUID = esti.UUID
 			AEst.FileName = newdest
